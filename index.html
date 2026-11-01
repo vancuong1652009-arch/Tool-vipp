@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>TOOL VIPP · Beta AI</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#09090B" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="splash" class="screen">
+    <div class="splash-inner">
+      <div class="logo-mark">👑</div>
+      <div class="logo-name">TOOL VIPP</div>
+      <div class="logo-sub">Beta Final · Expert Multi-AI</div>
+      <div class="loader"></div>
+    </div>
+  </div>
+
+  <div id="login" class="screen hidden">
+    <div class="login-wrap">
+      <div class="logo-mark sm">👑</div>
+      <h1 class="logo-name">TOOL VIPP</h1>
+      <p class="logo-sub">Beta Final · Multi-AI</p>
+      <div class="field">
+        <input type="text" id="keyInput" placeholder="Nhập access key" autocomplete="off" spellcheck="false" />
+      </div>
+      <p id="loginError" class="error hidden"></p>
+      <button id="btnLogin" class="btn-main">Tiếp tục</button>
+      <button id="btnInstall" class="btn-ghost">Thêm vào màn hình chính</button>
+      <p class="hint">Demo: <b>vip</b> · <b>pro</b> · <b>basic</b></p>
+      <button type="button" id="btnImportLicense" class="btn-ghost" style="margin-top:10px">Import keys từ Key Manager</button>
+      <input id="licenseFile" type="file" accept="application/json" class="hidden" />
+    </div>
+  </div>
+
+  <div id="home" class="screen hidden">
+    <header class="topbar">
+      <div class="top-left">
+        <span class="brand">TOOL VIPP</span>
+        <span id="levelBadge" class="badge">BETA</span>
+      </div>
+      <div class="top-right">
+        <button id="btnInstallHeader" class="icon-btn">⬇</button>
+        <button id="btnLogout" class="icon-btn">⏻</button>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="overview">
+        <div class="ov-card"><div class="ov-label">Winrate</div><div id="ovWinrate" class="ov-value">—</div></div>
+        <div class="ov-card"><div class="ov-label">Chuỗi</div><div id="ovStreak" class="ov-value">—</div></div>
+        <div class="ov-card"><div class="ov-label">Đúng/Tổng</div><div id="ovRecord" class="ov-value">0/0</div></div>
+      </section>
+
+      <div id="rankBox" class="rank-card hidden">
+        <div id="rankTitle" class="rank-name">🥚 KHỞI ĐẦU</div>
+        <div id="rankStats" class="rank-meta">Tiến độ rank</div>
+      </div>
+
+      <div id="aiWarning" class="alert hidden"></div>
+
+      <section class="panel">
+        <div class="panel-title">Dữ liệu đầu vào</div>
+        <p class="panel-desc">3 xí + 1 kết quả trước · Beta Final · 1000 AI cluster</p>
+        <div class="dice-grid">
+          <input type="tel" class="dice" type="text" inputmode="numeric" pattern="[1-6]" maxlength="1" placeholder="•" autocomplete="off" />
+          <input type="tel" class="dice" type="text" inputmode="numeric" pattern="[1-6]" maxlength="1" placeholder="•" autocomplete="off" />
+          <input type="tel" class="dice" type="text" inputmode="numeric" pattern="[1-6]" maxlength="1" placeholder="•" autocomplete="off" />
+          <input type="tel" class="dice" type="text" inputmode="numeric" pattern="[1-6]" maxlength="1" placeholder="•" autocomplete="off" />
+        </div>
+
+        <div class="seed-box">
+          <div class="seed-label">Seed / Random nguồn</div>
+          <input type="text" id="seedInput" class="seed-input" placeholder="Nhập seed thủ công (tuỳ chọn)" autocomplete="off" spellcheck="false" />
+          <div class="seed-actions">
+            <button type="button" id="btnLocalRandom" class="seed-btn">Random máy</button>
+            <button type="button" id="btnServerRandom" class="seed-btn">Random server demo</button>
+          </div>
+          <p id="seedSource" class="seed-source">Nguồn: chưa chọn · mặc định Math.random()</p>
+        </div>
+
+        <div class="btn-row">
+          <button id="btnPredict" class="btn-main">Phân tích hội đồng</button>
+          <button id="btnDeep" class="btn-deep">Phân tích sâu</button>
+        </div>
+        <button id="btnUltra" class="btn-ultra">Suy nghĩ cực sâu</button>
+      </section>
+
+      <section id="systemPanel" class="panel system-panel">
+        <div class="panel-title">Năng lực tư duy AI</div>
+        <div class="sys-grid">
+          <div class="sys-item">
+            <div class="sys-label">Cluster AI</div>
+            <div id="sysAICount" class="sys-value">1000</div>
+          </div>
+          <div class="sys-item">
+            <div class="sys-label">Chỉ số IQ</div>
+            <div id="sysIQ" class="sys-value">400</div>
+          </div>
+          <div class="sys-item">
+            <div class="sys-label">Cấp tư duy</div>
+            <div id="sysTier" class="sys-value sm">Max</div>
+          </div>
+        </div>
+        <p class="sys-note">IQ thể hiện mức độ phức tạp của mô phỏng tư duy trong app — không phải độ chính xác thắng cược thật.</p>
+      </section>
+
+      <!-- Multi AI process -->
+      <section id="multiAI" class="panel hidden">
+        <div class="panel-title">Cluster 1000 AI · 10 nhóm chuyên sâu</div>
+        <div id="agentList" class="agent-list"></div>
+        <div id="consensusBar" class="consensus hidden">
+          <div class="consensus-label">Tổng hợp tín hiệu</div>
+          <div class="consensus-track">
+            <div id="consensusFill" class="consensus-fill"></div>
+          </div>
+          <div class="consensus-meta">
+            <span id="consensusRed">Đỏ 0%</span>
+            <span id="consensusBlue">Xanh 0%</span>
+          </div>
+        </div>
+      </section>
+
+      <div id="aiThinking" class="thinking hidden">
+        <div class="thinking-bar"></div>
+        <span id="thinkingText">Đang khởi tạo cluster AI...</span>
+      </div>
+
+      <section id="resultCard" class="panel result hidden">
+        <div class="result-head">
+          <div id="resultColor" class="result-color">Đỏ</div>
+          <div id="resultMessage" class="result-tag">Consensus</div>
+        </div>
+        <div class="meters">
+          <div class="meter">
+            <div class="meter-ring" id="redCircle"><span id="redPercent">0%</span></div>
+            <span class="meter-label red">Đỏ</span>
+          </div>
+          <div class="meter">
+            <div class="meter-ring" id="blueCircle"><span id="bluePercent">0%</span></div>
+            <span class="meter-label blue">Xanh</span>
+          </div>
+        </div>
+        <div class="meta-row">
+          <span id="confidence">Đồng thuận AI: —</span>
+          <span id="sumInfo">Multi-AI Beta</span>
+        </div>
+        <p id="consensusNote" class="consensus-note">% này là mức đồng thuận giữa các AI trong app, không phải tỷ lệ thắng thật.</p>
+
+        <div class="ai-block">
+          <div class="ai-title">Phân tích tổng hợp</div>
+          <div id="aiReason" class="ai-body"></div>
+        </div>
+        <div class="ai-block suggest">
+          <div class="ai-title">Gợi ý</div>
+          <div id="aiSuggestText" class="ai-body"></div>
+        </div>
+
+        <div id="resultActions" class="actions">
+          <button id="btnWin" class="btn-win">Đúng</button>
+          <button id="btnLose" class="btn-lose">Sai</button>
+        </div>
+        <div id="resultFeedback" class="feedback hidden"></div>
+      </section>
+
+      <section id="aiTrend" class="panel hidden">
+        <div class="panel-title">Xu hướng</div>
+        <div id="aiTrendText" class="trend-text"></div>
+        <div id="streakInfo" class="trend-streak"></div>
+      </section>
+
+      <section id="statsBox" class="panel hidden">
+        <div class="panel-title">Thống kê</div>
+        <div class="stats-row">
+          <div class="stat"><span id="statRed" class="stat-n red">0</span><span class="stat-l">Đỏ</span></div>
+          <div class="stat"><span id="statBlue" class="stat-n blue">0</span><span class="stat-l">Xanh</span></div>
+          <div class="stat"><span id="statTotal" class="stat-n">0</span><span class="stat-l">Tổng</span></div>
+        </div>
+      </section>
+
+      <section id="historyBox" class="panel hidden">
+        <div class="panel-head">
+          <div class="panel-title">Lịch sử</div>
+          <button id="btnClearHistory" class="text-btn">Xóa</button>
+        </div>
+        <div id="historyList" class="history"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="iosGuide" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-top">
+        <strong>Thêm vào màn hình chính</strong>
+        <button id="closeIosGuide" class="icon-btn">✕</button>
+      </div>
+      <ol class="guide-list">
+        <li>Bấm <b>Chia sẻ</b> trên Safari</li>
+        <li>Chọn <b>Thêm vào màn hình chính</b></li>
+        <li>Bấm <b>Thêm</b></li>
+      </ol>
+      <button id="gotItIos" class="btn-main">Đã hiểu</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
